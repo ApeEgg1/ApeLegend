@@ -1,7 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const dataFile = path.join(__dirname, 'sessions.json');
+let sessions = {};
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== "POST") {
@@ -20,13 +17,7 @@ exports.handler = async function(event, context) {
       };
     }
 
-    let sessions = {};
-    if (fs.existsSync(dataFile)) {
-      sessions = JSON.parse(fs.readFileSync(dataFile));
-    }
-
     sessions[wallet.toLowerCase()] = gameState;
-    fs.writeFileSync(dataFile, JSON.stringify(sessions, null, 2));
 
     return {
       statusCode: 200,
