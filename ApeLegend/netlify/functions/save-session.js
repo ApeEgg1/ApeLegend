@@ -1,23 +1,32 @@
-let sessions = {};
+import { createClient } from '@supabase/supabase-js'
 
-exports.handler = async function(event, context) {
-  if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: "Method Not Allowed"
-    };
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
     const { wallet, gameState } = JSON.parse(event.body);
+
     if (!wallet || !gameState) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Missing wallet or gameState" })
+        body: JSON.stringify({ error: 'Missing wallet or gameState' })
       };
     }
 
-    sessions[wallet.toLowerCase()] = gameState;
+    const { error } = await supabase
+      .from('sessions')
+      .upsert({ wallet: wallet.toLowerCase(), data: gameState });
+
+    if (error) {
+      throw error;
+    }
 
     return {
       statusCode: 200,
