@@ -880,8 +880,9 @@ window.addEventListener("load", async () => {
                 if (parsed && parsed.tiles) {
                     for (let i = 0; i < 500; i++) {
                         const tile = parsed.tiles[i];
-                        // gameState.tiles[i].owner = tile.owner;
-        // gameState.tiles[i].nftIds = tile.nftIds || [];
+                        gameState.tiles[i].owner = tile.owner;
+console.log("🔄 tiles[i].owner set to", tile.owner);
+                        gameState.tiles[i].nftIds = tile.nftIds || [];
                         gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                         gameState.tiles[i].inTransit = tile.inTransit || false;
                         gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
@@ -926,6 +927,7 @@ generateMap(); // deferred until after tile ownership is loaded
             globalTiles.forEach(tile => {
                 if (gameState.tiles[tile.id]) {
                     gameState.tiles[tile.id].owner = tile.owner;
+console.log("🔄 tiles[tile.id].owner set to", tile.owner);
                     gameState.tiles[tile.id].nftIds = tile.nft_ids;
                     gameState.tiles[tile.id].inTransit = tile.in_transit;
                     gameState.tiles[tile.id].arrivalTime = tile.arrival_time;
@@ -934,6 +936,7 @@ generateMap(); // deferred until after tile ownership is loaded
                 }
             });
             console.log("🌐 Global map sync completed from Supabase.");
+updateTileVisuals();
         }
     } catch (error) {
         console.warn("❌ Failed to fetch global tiles:", error);
@@ -1226,6 +1229,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                     const tile = parsed.tiles[i];
                     if (tile.owner === gameState.connectedWallet) {
                         gameState.tiles[i].owner = tile.owner;
+console.log("🔄 tiles[i].owner set to", tile.owner);
                         gameState.tiles[i].nftIds = tile.nftIds || [];
                     }
                     gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
@@ -1249,6 +1253,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                     if (parsedState.tiles && parsedState.tiles.length === 500) {
                         for (let i = 0; i < 500; i++) {
                             gameState.tiles[i].owner = parsedState.tiles[i].owner;
+console.log("🔄 tiles[i].owner set to", parsedState.tiles[i].owner);
                             gameState.tiles[i].nftIds = parsedState.tiles[i].nftIds || [];
                             gameState.tiles[i].transitNFTs = parsedState.tiles[i].transitNFTs || [];
                             gameState.tiles[i].inTransit = parsedState.tiles[i].inTransit || false;
@@ -2417,6 +2422,7 @@ async function connectWallet() {
                             for (let j = 0; j < 500; j++) {
                                 if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
                                     gameState.tiles[j].owner = parsed.tiles[j].owner;
+console.log("🔄 tiles[j].owner set to", parsed.tiles[j].owner);
                                 }
                             }
                         }
@@ -2433,6 +2439,7 @@ async function connectWallet() {
                     for (let j = 0; j < 500; j++) {
                         if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
                             gameState.tiles[j].owner = parsed.tiles[j].owner;
+console.log("🔄 tiles[j].owner set to", parsed.tiles[j].owner);
                         }
                     }
                 }
@@ -3884,6 +3891,7 @@ if (!window.mapRefreshInterval) {
             for (let i = 0; i < 500; i++) {
                 const tile = parsed.tiles[i];
                 gameState.tiles[i].owner = tile.owner;
+console.log("🔄 tiles[i].owner set to", tile.owner);
                 gameState.tiles[i].nftIds = tile.nftIds || [];
                 gameState.tiles[i].inTransit = tile.inTransit || false;
                 gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
