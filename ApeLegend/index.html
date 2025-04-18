@@ -678,35 +678,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 window.addEventListener("load", async () => {
@@ -2327,35 +2298,6 @@ window.initiateUpgrade = initiateUpgrade;
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">async function saveGameStateToBackend() {
     if (!gameState.connectedWallet) return;
@@ -2378,35 +2320,6 @@ setInterval(() => {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <!-- BEGIN CUSTOM GAME LOGIC EXTENSIONS -->
 <style>
@@ -2555,35 +2468,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <!-- END CUSTOM GAME LOGIC EXTENSIONS -->
 <script>
@@ -2721,35 +2605,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <!-- Recall NFTs Modal -->
 <div class="modal" id="recallModal">
@@ -2912,35 +2767,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 // Fix 1: Make sure only new modal shows
@@ -3113,35 +2939,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 // ========== RECALL NFT POPUP CLEAN FIX ==========
@@ -3321,35 +3118,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 document.addEventListener('mousemove', (e) => {
@@ -3414,35 +3182,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 function updatePointsUI() {
@@ -3478,35 +3217,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <div class="modal" id="attackResultPopup" style="z-index:200;">
 <div class="modal-content" style="text-align:center;">
@@ -3571,35 +3281,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 
 </html>
@@ -3792,35 +3473,6 @@ async function saveGameStateToBackend() {
     }
 }
 
-
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
-}
-
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
 <script>
 function showComingSoon(name) {
@@ -3848,32 +3500,13 @@ async function saveGameStateToBackend() {
 }
 
 
-function updateMapSmoothly() {
-  for (let i = 0; i < gameState.tiles.length; i++) {
-    const tile = gameState.tiles[i];
-    const tileDiv = document.querySelector(`.map-tile[data-index="${i}"]`);
-    if (!tileDiv) continue;
-
-    const isOwner = tile.owner === gameState.connectedWallet;
-    const isEnemy = tile.owner && tile.owner !== gameState.connectedWallet;
-
-    tileDiv.classList.remove("yours", "occupied", "in-transit");
-
-    if (isOwner) {
-      tileDiv.classList.add("yours");
-    } else if (isEnemy) {
-      tileDiv.classList.add("occupied");
-    }
-
-    if (tile.inTransit) {
-      tileDiv.classList.add("in-transit");
-    }
-  }
+// 🔁 Auto-refresh map tiles and NFT states every 1 second
+if (!window.gameRefreshInterval) {
+    window.gameRefreshInterval = setInterval(() => {
+        updateTileVisuals();
+        updateNftCards();
+    }, 1000);
+    console.log("✅ Game visuals auto-refresh interval started.");
 }
 
-setInterval(() => {
-  if (gameState.connectedWallet) {
-    updateMapSmoothly();
-  }
-}, 1000);
 </script>
