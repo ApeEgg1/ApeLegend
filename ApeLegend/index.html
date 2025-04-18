@@ -902,17 +902,7 @@ window.addEventListener("load", async () => {
                     updateTileVisuals();
                     updateNftCards();
                     // 
-gameState.tiles = Array.from({ length: 500 }, () => ({
-    owner: null,
-    nftIds: [],
-    inTransit: false,
-    arrivalTime: null,
-    transitStartTime: null,
-    buildings: {
-        nest: { level: 0, completeTime: null },
-        storage: { level: 0, completeTime: null }
-    }
-}));
+
 
 generateMap(); // deferred until after tile ownership is loaded
                     calculatePointsProduction();
