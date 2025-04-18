@@ -1254,8 +1254,9 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                                 if (Date.now() >= gameState.tiles[i].arrivalTime) {
                                     completeTransit(i);
                                 } else {
-                                    updateTransitTimer(i);
-                                }
+                                    
+        tileElement.classList.add("red-tile");
+    }
                             }
                         }
                     }
@@ -1577,13 +1578,9 @@ tileBuildingInfo.appendChild(buildingDiv);
                     }
                     showBuildOption(tileIndex);
                 } else {
-                    tileStatus.textContent = "Occupied by another player";
-                    tileOwnerInfo.innerHTML = '';
-                    tileBuildingInfo.style.display = 'none';
-                    attackButton.disabled = gameState.nfts.filter(nft => !gameState.nftLocations[nft.id]).length === 0;
-                    sendButton.disabled = true;
-                    buildButton.style.display = 'none';
-                }
+                    
+        tileElement.classList.add("red-tile");
+    }
             } else {
                 tileStatus.textContent = "Unoccupied";
                 tileOwnerInfo.innerHTML = '';
@@ -2951,16 +2948,9 @@ document.getElementById('recallNftsButton')?.addEventListener('click', () => {
         });
         showGameMessage('All NFTs recalled. Tiles released.');
     } else {
-        const id = selection.trim();
-        gameState.nftLocations[id] = null;
-        gameState.tiles.forEach(tile => {
-            const index = tile.nftIds.indexOf(id);
-            if (index !== -1) {
-                tile.nftIds.splice(index, 1);
-                if (tile.nftIds.length === 0) {
-                    tile.owner = null;
-                    tile.buildings = {
-                        nest: { level: 0, completeTime: null },
+        
+        tileElement.classList.add("red-tile");
+    },
                         storage: { level: 0, completeTime: null }
                     };
                 }
@@ -3405,8 +3395,9 @@ function updateBuildingTimer(tileIndex, buildingType) {
         if (tile.owner === gameState.connectedWallet) {
             if (gameState.selectedTile === tileIndex) { actionTimer.textContent = timeLeft > 0 ? `Time remaining: ${Math.floor(timeLeft/60)}m ${timeLeft%60}s` : ''; }
         } else {
-            actionTimer.textContent = '';
-        }
+            
+        tileElement.classList.add("red-tile");
+    }
 
         if (timeLeft <= 0) {
             clearInterval(gameState.transitIntervals[`building_${tileIndex}_${buildingType}`]);
@@ -3988,8 +3979,9 @@ function updatePointsUI() {
 // Removed orphaned else if (type?.includes('mutant')) {
                 pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.24 : 0.2;
             } else {
-                pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.12 : 0.1;
-            }
+                
+        tileElement.classList.add("red-tile");
+    }
 
             totalPerMinute += pointsPerHour / 60;
         }
