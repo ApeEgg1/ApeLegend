@@ -879,9 +879,10 @@ window.addEventListener("load", async () => {
 
                     updateTileVisuals();
                     updateNftCards();
-                    generateMap();
+                    // generateMap(); // deferred until after tile ownership is loaded
                     calculatePointsProduction();
                     console.log("✅ Game state restored from Netlify.");
+generateMap();
                 } else {
                     console.log("📦 No saved session found on Netlify");
                 }
@@ -2379,7 +2380,7 @@ async function connectWallet() {
         }
     }
 
-    generateMap();
+    // generateMap(); // deferred until after tile ownership is loaded
     updateTileVisuals();
                 startDefenderCleanup();
             if (loadGameState()) {
