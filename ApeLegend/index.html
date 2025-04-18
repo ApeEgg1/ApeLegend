@@ -1057,6 +1057,19 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
         const gameState = {
   _tiles: [], // backing field for tiles
 
+gameState.tiles = Array.from({ length: 500 }, () => ({
+    owner: undefined,
+    nftIds: [],
+    inTransit: false,
+    arrivalTime: null,
+    transitStartTime: null,
+    buildings: {
+        nest: { level: 0, completeTime: null },
+        storage: { level: 0, completeTime: null }
+    }
+}));
+
+
             connectedWallet: null,
             selectedTile: null,
             selectedAction: null,
