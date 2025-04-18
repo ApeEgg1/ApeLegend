@@ -880,8 +880,8 @@ window.addEventListener("load", async () => {
                 if (parsed && parsed.tiles) {
                     for (let i = 0; i < 500; i++) {
                         const tile = parsed.tiles[i];
-                        gameState.tiles[i].owner = tile.owner;
-                        gameState.tiles[i].nftIds = tile.nftIds || [];
+                        // gameState.tiles[i].owner = tile.owner;
+        // gameState.tiles[i].nftIds = tile.nftIds || [];
                         gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                         gameState.tiles[i].inTransit = tile.inTransit || false;
                         gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
