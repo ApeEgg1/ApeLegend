@@ -1,10 +1,6 @@
 
 const { createClient } = require('@supabase/supabase-js');
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -13,10 +9,7 @@ exports.handler = async (event) => {
 
   try {
     const tile = JSON.parse(event.body);
-    const { error } = await supabase
-      .from('tiles')
-      .upsert(tile);
-
+    const { error } = await supabase.from('tiles').upsert(tile);
     if (error) throw error;
 
     return {
