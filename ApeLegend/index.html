@@ -917,6 +917,28 @@ gameState.tiles = Array.from({ length: 500 }, () => ({
 generateMap(); // deferred until after tile ownership is loaded
                     calculatePointsProduction();
                     console.log("✅ Game state restored from Netlify.");
+
+    // 🌍 Fetch global tile data from Supabase and overwrite local tiles
+    try {
+        const response = await fetch("/.netlify/functions/get-tiles");
+        const globalTiles = await response.json();
+        if (Array.isArray(globalTiles)) {
+            globalTiles.forEach(tile => {
+                if (gameState.tiles[tile.id]) {
+                    gameState.tiles[tile.id].owner = tile.owner;
+                    gameState.tiles[tile.id].nftIds = tile.nft_ids;
+                    gameState.tiles[tile.id].inTransit = tile.in_transit;
+                    gameState.tiles[tile.id].arrivalTime = tile.arrival_time;
+                    gameState.tiles[tile.id].transitStartTime = tile.transit_start_time;
+                    gameState.tiles[tile.id].buildings = tile.buildings;
+                }
+            });
+            console.log("🌐 Global map sync completed from Supabase.");
+        }
+    } catch (error) {
+        console.warn("❌ Failed to fetch global tiles:", error);
+    }
+
 generateMap();
 updateTileVisuals();
                 } else {
