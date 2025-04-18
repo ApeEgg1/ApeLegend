@@ -1,7 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-
-const dataFile = path.join(__dirname, 'sessions.json');
+let sessions = {};
 
 exports.handler = async function(event, context) {
   const wallet = event.queryStringParameters.wallet;
@@ -10,11 +7,6 @@ exports.handler = async function(event, context) {
       statusCode: 400,
       body: JSON.stringify({ error: "Wallet address required" })
     };
-  }
-
-  let sessions = {};
-  if (fs.existsSync(dataFile)) {
-    sessions = JSON.parse(fs.readFileSync(dataFile));
   }
 
   const data = sessions[wallet.toLowerCase()] || null;
