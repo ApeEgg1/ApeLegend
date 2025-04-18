@@ -1254,10 +1254,8 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                                 if (Date.now() >= gameState.tiles[i].arrivalTime) {
                                     completeTransit(i);
                                 } else {
-                                    
-        tileElement.classList.remove("green-tile");
-        tileElement.classList.add("red-tile");
-    }
+                                    updateTransitTimer(i);
+                                }
                             }
                         }
                     }
@@ -1318,155 +1316,22 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
         }
 
         function updateTileVisuals() {
-            for (let i = 0; i < 500; i++) {
-                const tile = gameState.tiles[i];
-        
-                const tileElement = document.querySelector(`.map-tile[data-index="${i}"]`);
-                if (!tileElement) continue;
-                
-                tileElement.className = 'map-tile';
-                
-                if (tile.owner) {
-                    if (gameState.connectedWallet === tile.owner) {
-                        tileElement.classList.add('yours');
-                    } else {
-                        tileElement.classList.add('occupied');
-                    }
-                }
-                
-                if (tile.inTransit) {
-                    tileElement.classList.add('in-transit');
-                    if (!gameState.transitIntervals[i]) {
-                        updateTransitTimer(i);
-                    }
-                }
-            }
-        }
-
-        function updateNftCards() {
-            const nftCards = document.querySelectorAll('.nft-card');
-            nftCards.forEach(card => {
-                const nftId = card.dataset.nftId;
-                const statusOverlay = card.querySelector('.nft-status-overlay');
-                if (statusOverlay) {
-                    card.removeChild(statusOverlay);
-                }
-                card.classList.remove('nft-in-use');
-                const location = gameState.nftLocations[nftId];
-                if (location !== undefined && location !== null) {
-
-                if (location === 'cooldown') {
-                    card.classList.add('nft-in-use');
-
-                    const storageKey = `cooldownStart_${nftId}`;
-                    let start = localStorage.getItem(storageKey);
-                    if (!start) {
-                        start = Date.now();
-                        localStorage.setItem(storageKey, start);
-                    } else {
-                        start = parseInt(start);
-                    }
-
-                    let overlay = card.querySelector('.nft-status-overlay');
-                    if (!overlay) {
-                        overlay = document.createElement('div');
-                        overlay.className = 'nft-status-overlay';
-                        card.appendChild(overlay);
-                    }
-
-                    let textDiv = overlay.querySelector('.nft-status-text');
-                    if (!textDiv) {
-                        textDiv = document.createElement('div');
-                        textDiv.className = 'nft-status-text';
-                        overlay.appendChild(textDiv);
-                    }
-
-                    const update = () => {
-                        const elapsed = Date.now() - start;
-                        const total = 10 * 60 * 1000;
-                        const remaining = total - elapsed;
-                        if (remaining <= 0) {
-                            gameState.nftLocations[nftId] = null;
-                            localStorage.removeItem(storageKey);
-                            overlay.remove();
-                            card.classList.remove('nft-in-use');
-                            textDiv.remove();
-                            updateNftCards();
-                            return;
-                        }
-                        const mins = Math.floor(remaining / 60000);
-                        const secs = Math.floor((remaining % 60000) / 1000);
-                        textDiv.innerHTML = `Cooldown<br>${mins}m ${secs}s`;
-                    };
-
-                    update();
-                    setInterval(update, 1000);
-                    return;
-                }
-
-                    card.classList.add('nft-in-use');
-                    const overlay = document.createElement('div');
-                    overlay.className = 'nft-status-overlay';
-                    if (location === 'in-transit') {
-                        overlay.innerHTML = '<div class=\"nft-status-text\">In Transit</div>';
-                    } else if (typeof location === 'number') {
-                        const tile = gameState.tiles[location];
-                        if (tile) {
-                            overlay.innerHTML = `<div class=\"nft-status-text\">Working on Land ${location + 1}</div>`;
-                        }
-                    }
-                    card.appendChild(overlay);
-                }
-            });
-        }
-
-        
-function calculatePointsProduction() {
-    let production = 0;
     for (let i = 0; i < 500; i++) {
         const tile = gameState.tiles[i];
-        if (tile.owner === gameState.connectedWallet && !tile.inTransit) {
-            // Only apply building bonus if upgrade is complete
-            const storageUpgradeInProgress = tile.buildings.storage.completeTime && tile.buildings.storage.completeTime > Date.now();
-            let storageLevel = storageUpgradeInProgress ? tile.buildings.storage.level - 1 : tile.buildings.storage.level;
-            if (storageLevel < 0) storageLevel = 0;
+        const tileElement = document.getElementById(`tile-${i}`);
 
-            for (const nftId of tile.nftIds) {
-                const nft = gameState.nfts.find(n => n.id === nftId);
-                if (nft && nft.metadata?.attributes) {
-                    const typeAttr = nft.metadata.attributes.find(attr => attr.trait_type === 'Type');
-                    const factionAttr = nft.metadata.attributes.find(attr => attr.trait_type === 'Faction');
-                    const type = typeAttr?.value?.toLowerCase() || '';
-                    const faction = factionAttr?.value?.toLowerCase() || '';
-                    let pointsPerHour = 0;
+        tileElement.classList.remove("green-tile", "red-tile", "neutral-tile");
 
-                    if (type.includes('genesis')) {
-                        pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.33 : 0.3;
-                    } else if (type.includes('mutant')) {
-                        pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.22 : 0.2;
-                    } else {
-                        pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.11 : 0.1;
-                    }
-
-                    if (storageLevel > 0) {
-                        pointsPerHour *= (1 + (storageLevel * 0.1));
-                    }
-
-                    // Apply landform bonus if NFT matches tile landform
-                    const landformAttr = nft.metadata.attributes.find(attr => attr.trait_type === 'Landform');
-                    if (landformAttr && landformAttr.value === tile.landform.name) {
-                        pointsPerHour *= 1.1; // 10% bonus
-                    }
-
-                    production += pointsPerHour;
-                }
+        if (tile.owner) {
+            if (tile.owner === gameState.connectedWallet) {
+                tileElement.classList.add("green-tile");
+            } else {
+                tileElement.classList.add("red-tile");
             }
+        } else {
+            tileElement.classList.add("neutral-tile");
         }
     }
-    gameState.pointsProduction = production;
-    pointsRateElements.forEach(el => el.textContent = `Production: ${production.toFixed(3)}/hr`);
-    saveGameState();
-    return production;
 }
 
 
@@ -1579,10 +1444,13 @@ tileBuildingInfo.appendChild(buildingDiv);
                     }
                     showBuildOption(tileIndex);
                 } else {
-                    
-        tileElement.classList.remove("green-tile");
-        tileElement.classList.add("red-tile");
-    }
+                    tileStatus.textContent = "Occupied by another player";
+                    tileOwnerInfo.innerHTML = '';
+                    tileBuildingInfo.style.display = 'none';
+                    attackButton.disabled = gameState.nfts.filter(nft => !gameState.nftLocations[nft.id]).length === 0;
+                    sendButton.disabled = true;
+                    buildButton.style.display = 'none';
+                }
             } else {
                 tileStatus.textContent = "Unoccupied";
                 tileOwnerInfo.innerHTML = '';
@@ -2950,10 +2818,16 @@ document.getElementById('recallNftsButton')?.addEventListener('click', () => {
         });
         showGameMessage('All NFTs recalled. Tiles released.');
     } else {
-        
-        tileElement.classList.remove("green-tile");
-        tileElement.classList.add("red-tile");
-    },
+        const id = selection.trim();
+        gameState.nftLocations[id] = null;
+        gameState.tiles.forEach(tile => {
+            const index = tile.nftIds.indexOf(id);
+            if (index !== -1) {
+                tile.nftIds.splice(index, 1);
+                if (tile.nftIds.length === 0) {
+                    tile.owner = null;
+                    tile.buildings = {
+                        nest: { level: 0, completeTime: null },
                         storage: { level: 0, completeTime: null }
                     };
                 }
@@ -3398,10 +3272,8 @@ function updateBuildingTimer(tileIndex, buildingType) {
         if (tile.owner === gameState.connectedWallet) {
             if (gameState.selectedTile === tileIndex) { actionTimer.textContent = timeLeft > 0 ? `Time remaining: ${Math.floor(timeLeft/60)}m ${timeLeft%60}s` : ''; }
         } else {
-            
-        tileElement.classList.remove("green-tile");
-        tileElement.classList.add("red-tile");
-    }
+            actionTimer.textContent = '';
+        }
 
         if (timeLeft <= 0) {
             clearInterval(gameState.transitIntervals[`building_${tileIndex}_${buildingType}`]);
@@ -3983,10 +3855,8 @@ function updatePointsUI() {
 // Removed orphaned else if (type?.includes('mutant')) {
                 pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.24 : 0.2;
             } else {
-                
-        tileElement.classList.remove("green-tile");
-        tileElement.classList.add("red-tile");
-    }
+                pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.12 : 0.1;
+            }
 
             totalPerMinute += pointsPerHour / 60;
         }
