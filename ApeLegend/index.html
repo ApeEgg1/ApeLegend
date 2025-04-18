@@ -576,10 +576,94 @@
     }
 }
 
+
+@media (max-width: 768px) {
+    .top-menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-items {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    .menu-items.show {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: #cfd8dc;
+        background: rgba(30, 0, 60, 0.8);
+        border: 1px solid #00e5ff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .nft-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .map-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 100%;
+    }
+
+    .points-display {
+        position: static;
+        margin-bottom: 1rem;
+        width: 100%;
+        align-items: flex-start;
+        transform: scale(0.8); /* Make it ~20% smaller */
+        transform-origin: top right;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .action-nfts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .nft-image {
+        height: auto;
+        max-height: 150px;
+    }
+
+    .action-nft-image {
+        height: auto;
+        max-height: 80px;
+    }
+}
+
+/* Overlay should only cover the image */
+.nft-card .nft-status-overlay {
+    height: auto !important;
+    bottom: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
 </style>
 </head>
 <body>
 <div class="top-menu">
+<div class="menu-toggle" onclick="document.querySelector('.menu-items').classList.toggle('show')">☰ Menu</div>
 <div class="menu-items">
 <div class="menu-item active" data-page="myItems">My Items</div>
 <div class="menu-item" data-page="map">Map</div>
@@ -2461,6 +2545,89 @@ window.initiateUpgrade = initiateUpgrade;
         height: auto;
         max-height: 80px;
     }
+}
+
+
+@media (max-width: 768px) {
+    .top-menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-items {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    .menu-items.show {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: #cfd8dc;
+        background: rgba(30, 0, 60, 0.8);
+        border: 1px solid #00e5ff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .nft-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .map-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 100%;
+    }
+
+    .points-display {
+        position: static;
+        margin-bottom: 1rem;
+        width: 100%;
+        align-items: flex-start;
+        transform: scale(0.8); /* Make it ~20% smaller */
+        transform-origin: top right;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .action-nfts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .nft-image {
+        height: auto;
+        max-height: 150px;
+    }
+
+    .action-nft-image {
+        height: auto;
+        max-height: 80px;
+    }
+}
+
+/* Overlay should only cover the image */
+.nft-card .nft-status-overlay {
+    height: auto !important;
+    bottom: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
 }
 
 </style>
