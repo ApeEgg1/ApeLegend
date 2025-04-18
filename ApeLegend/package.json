@@ -1,0 +1,12 @@
+{
+  "name": "ape-legend-site",
+  "version": "1.0.0",
+  "description": "ApeLegend game site with Supabase session backend",
+  "main": "index.html",
+  "scripts": {
+    "start": "echo Starting static site..."
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.5"
+  }
+}
