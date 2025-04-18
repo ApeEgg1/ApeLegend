@@ -837,6 +837,28 @@ async function saveGameStateToBackend() {
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <script>
 window.addEventListener("load", async () => {
@@ -2461,6 +2483,28 @@ window.initiateUpgrade = initiateUpgrade;
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">async function saveGameStateToBackend() {
     if (!gameState.connectedWallet) return;
@@ -2480,6 +2524,28 @@ window.initiateUpgrade = initiateUpgrade;
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -2789,6 +2855,28 @@ async function saveGameStateToBackend() {
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <!-- END CUSTOM GAME LOGIC EXTENSIONS -->
 <script>
@@ -2923,6 +3011,28 @@ async function saveGameStateToBackend() {
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -3085,6 +3195,28 @@ async function saveGameStateToBackend() {
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -3257,6 +3389,28 @@ async function saveGameStateToBackend() {
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -3439,6 +3593,28 @@ async function saveGameStateToBackend() {
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <script>
 document.addEventListener('mousemove', (e) => {
@@ -3503,6 +3679,28 @@ async function saveGameStateToBackend() {
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <script>
 function updatePointsUI() {
@@ -3535,6 +3733,28 @@ async function saveGameStateToBackend() {
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -3580,6 +3800,28 @@ document.querySelectorAll('.menu-item').forEach(item => {
         }
     });
 });
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 
 <script>
@@ -3612,42 +3854,28 @@ if (!window.mapRefreshInterval) {
     }, 1000);
     console.log("🔄 Map auto-refresh enabled");
 }
-</script>
 
-
-<script>
-async function syncGlobalTiles() {
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
     try {
-        const res = await fetch("/.netlify/functions/get-tiles");
-        const tiles = await res.json();
-
-        if (Array.isArray(tiles)) {
-            tiles.forEach(tile => {
-                const localTile = gameState.tiles[tile.id];
-                if (localTile) {
-                    localTile.owner = tile.owner;
-                    localTile.nftIds = tile.nft_ids || [];
-                    localTile.inTransit = tile.in_transit || false;
-                    localTile.arrivalTime = tile.arrival_time;
-                    localTile.transitStartTime = tile.transit_start_time;
-                    localTile.buildings = tile.buildings || {
-                        nest: { level: 0, completeTime: null },
-                        storage: { level: 0, completeTime: null }
-                    };
-                }
-            });
-            updateTileVisuals();
-        }
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
     } catch (err) {
-        console.warn("Failed to sync tiles:", err);
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
-setInterval(() => {
-    if (gameState.connectedWallet) {
-        syncGlobalTiles();
-    }
-}, 1000);
 </script>
 
 </body>
@@ -3677,6 +3905,28 @@ async function saveGameStateToBackend() {
         console.log("✅ Game state saved to Netlify:", result);
     } catch (error) {
         console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
     }
 }
 
@@ -3872,6 +4122,28 @@ async function saveGameStateToBackend() {
     }
 }
 
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
 </script>
 <script>
 function showComingSoon(name) {
@@ -3906,6 +4178,28 @@ if (!window.gameRefreshInterval) {
         updateNftCards();
     }, 1000);
     console.log("✅ Game visuals auto-refresh interval started.");
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
 }
 
 </script>
