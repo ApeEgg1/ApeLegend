@@ -1319,6 +1319,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
     for (let i = 0; i < 500; i++) {
         const tile = gameState.tiles[i];
         const tileElement = document.getElementById(`tile-${i}`);
+        if (!tileElement) continue; // ✅ safely skip missing tile elements
 
         tileElement.classList.remove("green-tile", "red-tile", "neutral-tile");
 
