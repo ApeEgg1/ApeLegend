@@ -1255,6 +1255,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                                     completeTransit(i);
                                 } else {
                                     
+        tileElement.classList.remove("green-tile");
         tileElement.classList.add("red-tile");
     }
                             }
@@ -1579,6 +1580,7 @@ tileBuildingInfo.appendChild(buildingDiv);
                     showBuildOption(tileIndex);
                 } else {
                     
+        tileElement.classList.remove("green-tile");
         tileElement.classList.add("red-tile");
     }
             } else {
@@ -2949,6 +2951,7 @@ document.getElementById('recallNftsButton')?.addEventListener('click', () => {
         showGameMessage('All NFTs recalled. Tiles released.');
     } else {
         
+        tileElement.classList.remove("green-tile");
         tileElement.classList.add("red-tile");
     },
                         storage: { level: 0, completeTime: null }
@@ -3396,6 +3399,7 @@ function updateBuildingTimer(tileIndex, buildingType) {
             if (gameState.selectedTile === tileIndex) { actionTimer.textContent = timeLeft > 0 ? `Time remaining: ${Math.floor(timeLeft/60)}m ${timeLeft%60}s` : ''; }
         } else {
             
+        tileElement.classList.remove("green-tile");
         tileElement.classList.add("red-tile");
     }
 
@@ -3980,6 +3984,7 @@ function updatePointsUI() {
                 pointsPerHour = (faction === 'worker' || faction === 'captain') ? 0.24 : 0.2;
             } else {
                 
+        tileElement.classList.remove("green-tile");
         tileElement.classList.add("red-tile");
     }
 
