@@ -882,7 +882,10 @@ window.addEventListener("load", async () => {
                     // generateMap(); // deferred until after tile ownership is loaded
                     calculatePointsProduction();
                     console.log("✅ Game state restored from Netlify.");
-generateMap();
+setTimeout(() => {
+  generateMap();
+  updateTileVisuals();
+}, 200);
                 } else {
                     console.log("📦 No saved session found on Netlify");
                 }
