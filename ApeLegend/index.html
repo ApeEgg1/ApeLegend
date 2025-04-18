@@ -3614,6 +3614,42 @@ if (!window.mapRefreshInterval) {
 }
 </script>
 
+
+<script>
+async function syncGlobalTiles() {
+    try {
+        const res = await fetch("/.netlify/functions/get-tiles");
+        const tiles = await res.json();
+
+        if (Array.isArray(tiles)) {
+            tiles.forEach(tile => {
+                const localTile = gameState.tiles[tile.id];
+                if (localTile) {
+                    localTile.owner = tile.owner;
+                    localTile.nftIds = tile.nft_ids || [];
+                    localTile.inTransit = tile.in_transit || false;
+                    localTile.arrivalTime = tile.arrival_time;
+                    localTile.transitStartTime = tile.transit_start_time;
+                    localTile.buildings = tile.buildings || {
+                        nest: { level: 0, completeTime: null },
+                        storage: { level: 0, completeTime: null }
+                    };
+                }
+            });
+            updateTileVisuals();
+        }
+    } catch (err) {
+        console.warn("Failed to sync tiles:", err);
+    }
+}
+
+setInterval(() => {
+    if (gameState.connectedWallet) {
+        syncGlobalTiles();
+    }
+}, 1000);
+</script>
+
 </body>
 
 <script>
