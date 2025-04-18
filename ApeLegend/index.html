@@ -3581,6 +3581,39 @@ document.querySelectorAll('.menu-item').forEach(item => {
     });
 });
 </script>
+
+<script>
+if (!window.mapRefreshInterval) {
+    window.mapRefreshInterval = setInterval(async () => {
+        if (!gameState.connectedWallet) return;
+        try {
+            const res = await fetch(`/.netlify/functions/get-session?wallet=${gameState.connectedWallet}`);
+            if (!res.ok) throw new Error("Failed to fetch session");
+            const parsed = await res.json();
+            if (!parsed || !parsed.tiles) return;
+
+            for (let i = 0; i < 500; i++) {
+                const tile = parsed.tiles[i];
+                gameState.tiles[i].owner = tile.owner;
+                gameState.tiles[i].nftIds = tile.nftIds || [];
+                gameState.tiles[i].inTransit = tile.inTransit || false;
+                gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
+                gameState.tiles[i].transitStartTime = tile.transitStartTime || null;
+                gameState.tiles[i].buildings = tile.buildings || {
+                    nest: { level: 0, completeTime: null },
+                    storage: { level: 0, completeTime: null }
+                };
+            }
+
+            updateTileVisuals();
+        } catch (err) {
+            console.warn("Map sync failed:", err);
+        }
+    }, 1000);
+    console.log("🔄 Map auto-refresh enabled");
+}
+</script>
+
 </body>
 
 <script>
