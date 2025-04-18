@@ -881,7 +881,6 @@ window.addEventListener("load", async () => {
                     for (let i = 0; i < 500; i++) {
                         const tile = parsed.tiles[i];
                         gameState.tiles[i].owner = tile.owner;
-console.log("🔄 tiles[i].owner set to", tile.owner);
                         gameState.tiles[i].nftIds = tile.nftIds || [];
                         gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                         gameState.tiles[i].inTransit = tile.inTransit || false;
@@ -927,7 +926,6 @@ generateMap(); // deferred until after tile ownership is loaded
             globalTiles.forEach(tile => {
                 if (gameState.tiles[tile.id]) {
                     gameState.tiles[tile.id].owner = tile.owner;
-console.log("🔄 tiles[tile.id].owner set to", tile.owner);
                     gameState.tiles[tile.id].nftIds = tile.nft_ids;
                     gameState.tiles[tile.id].inTransit = tile.in_transit;
                     gameState.tiles[tile.id].arrivalTime = tile.arrival_time;
@@ -936,7 +934,6 @@ console.log("🔄 tiles[tile.id].owner set to", tile.owner);
                 }
             });
             console.log("🌐 Global map sync completed from Supabase.");
-updateTileVisuals();
         }
     } catch (error) {
         console.warn("❌ Failed to fetch global tiles:", error);
@@ -1056,26 +1053,6 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
         const STUCK_TRANSIT_TIMEOUT = 5000;
 
         const gameState = {
-    tiles: new Proxy(Array.from({ length: 500 }, (_, i) => ({
-        owner: null,
-        nftIds: [],
-        inTransit: false,
-        arrivalTime: null,
-        transitStartTime: null,
-        buildings: {
-            nest: { level: 0, completeTime: null },
-            storage: { level: 0, completeTime: null }
-        }
-    })), {
-        set(target, prop, value) {
-            if (typeof value === 'object' && value !== null && value.owner === null) {
-                console.trace(`🚨 gameState.tiles[${prop}].owner set to null`);
-            }
-            target[prop] = value;
-            return true;
-        }
-    })
-};
             connectedWallet: null,
             selectedTile: null,
             selectedAction: null,
@@ -1249,7 +1226,6 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                     const tile = parsed.tiles[i];
                     if (tile.owner === gameState.connectedWallet) {
                         gameState.tiles[i].owner = tile.owner;
-console.log("🔄 tiles[i].owner set to", tile.owner);
                         gameState.tiles[i].nftIds = tile.nftIds || [];
                     }
                     gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
@@ -1273,7 +1249,6 @@ console.log("🔄 tiles[i].owner set to", tile.owner);
                     if (parsedState.tiles && parsedState.tiles.length === 500) {
                         for (let i = 0; i < 500; i++) {
                             gameState.tiles[i].owner = parsedState.tiles[i].owner;
-console.log("🔄 tiles[i].owner set to", parsedState.tiles[i].owner);
                             gameState.tiles[i].nftIds = parsedState.tiles[i].nftIds || [];
                             gameState.tiles[i].transitNFTs = parsedState.tiles[i].transitNFTs || [];
                             gameState.tiles[i].inTransit = parsedState.tiles[i].inTransit || false;
@@ -2442,7 +2417,6 @@ async function connectWallet() {
                             for (let j = 0; j < 500; j++) {
                                 if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
                                     gameState.tiles[j].owner = parsed.tiles[j].owner;
-console.log("🔄 tiles[j].owner set to", parsed.tiles[j].owner);
                                 }
                             }
                         }
@@ -2459,7 +2433,6 @@ console.log("🔄 tiles[j].owner set to", parsed.tiles[j].owner);
                     for (let j = 0; j < 500; j++) {
                         if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
                             gameState.tiles[j].owner = parsed.tiles[j].owner;
-console.log("🔄 tiles[j].owner set to", parsed.tiles[j].owner);
                         }
                     }
                 }
@@ -3911,7 +3884,6 @@ if (!window.mapRefreshInterval) {
             for (let i = 0; i < 500; i++) {
                 const tile = parsed.tiles[i];
                 gameState.tiles[i].owner = tile.owner;
-console.log("🔄 tiles[i].owner set to", tile.owner);
                 gameState.tiles[i].nftIds = tile.nftIds || [];
                 gameState.tiles[i].inTransit = tile.inTransit || false;
                 gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
