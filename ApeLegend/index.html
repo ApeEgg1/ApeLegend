@@ -1056,6 +1056,26 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
         const STUCK_TRANSIT_TIMEOUT = 5000;
 
         const gameState = {
+    tiles: new Proxy(Array.from({ length: 500 }, (_, i) => ({
+        owner: null,
+        nftIds: [],
+        inTransit: false,
+        arrivalTime: null,
+        transitStartTime: null,
+        buildings: {
+            nest: { level: 0, completeTime: null },
+            storage: { level: 0, completeTime: null }
+        }
+    })), {
+        set(target, prop, value) {
+            if (typeof value === 'object' && value !== null && value.owner === null) {
+                console.trace(`🚨 gameState.tiles[${prop}].owner set to null`);
+            }
+            target[prop] = value;
+            return true;
+        }
+    })
+};
             connectedWallet: null,
             selectedTile: null,
             selectedAction: null,
