@@ -915,6 +915,17 @@ Object.defineProperty(gameState, "tiles", {
   configurable: true
 });
 
+if (!gameState.tiles || gameState.tiles.length === 0) gameState.tiles = Array.from({ length: 500 }, () => ({
+    owner: null,
+    nftIds: [],
+    inTransit: false,
+    arrivalTime: null,
+    transitStartTime: null,
+    buildings: {
+        nest: { level: 0, completeTime: null },
+        storage: { level: 0, completeTime: null }
+    }
+})); }
 
 generateMap(); // deferred until after tile ownership is loaded
                     calculatePointsProduction();
@@ -1056,19 +1067,6 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
 
         const gameState = {
   _tiles: [], // backing field for tiles
-
-gameState.tiles = Array.from({ length: 500 }, () => ({
-    owner: undefined,
-    nftIds: [],
-    inTransit: false,
-    arrivalTime: null,
-    transitStartTime: null,
-    buildings: {
-        nest: { level: 0, completeTime: null },
-        storage: { level: 0, completeTime: null }
-    }
-}));
-
 
             connectedWallet: null,
             selectedTile: null,
@@ -2458,6 +2456,17 @@ async function connectWallet() {
     }
 
     // 
+if (!gameState.tiles || gameState.tiles.length === 0) gameState.tiles = Array.from({ length: 500 }, () => ({
+    owner: null,
+    nftIds: [],
+    inTransit: false,
+    arrivalTime: null,
+    transitStartTime: null,
+    buildings: {
+        nest: { level: 0, completeTime: null },
+        storage: { level: 0, completeTime: null }
+    }
+}));
 
 generateMap(); // deferred until after tile ownership is loaded
     updateTileVisuals();
