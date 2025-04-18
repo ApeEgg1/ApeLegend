@@ -3509,4 +3509,45 @@ if (!window.gameRefreshInterval) {
     console.log("✅ Game visuals auto-refresh interval started.");
 }
 
+
+// 🔁 Periodically fetch the latest game state from backend
+if (!window.syncInterval && gameState.connectedWallet) {
+    window.syncInterval = setInterval(async () => {
+        try {
+            const res = await fetch(`/.netlify/functions/get-session?wallet=${gameState.connectedWallet}`);
+            if (!res.ok) throw new Error("Session fetch failed");
+            const data = await res.json();
+            if (!data || !data.tiles) return;
+
+            // Overwrite tiles
+            for (let i = 0; i < 500; i++) {
+                gameState.tiles[i].owner = data.tiles[i].owner;
+                gameState.tiles[i].nftIds = data.tiles[i].nftIds || [];
+                gameState.tiles[i].transitNFTs = data.tiles[i].transitNFTs || [];
+                gameState.tiles[i].inTransit = data.tiles[i].inTransit || false;
+                gameState.tiles[i].arrivalTime = data.tiles[i].arrivalTime || null;
+                gameState.tiles[i].transitStartTime = data.tiles[i].transitStartTime || null;
+                gameState.tiles[i].buildings = data.tiles[i].buildings || {
+                    nest: { level: 0, completeTime: null },
+                    storage: { level: 0, completeTime: null }
+                };
+            }
+
+            gameState.nftLocations = data.nftLocations || {};
+            gameState.points = data.points || 0;
+            gameState.pointsProduction = data.pointsProduction || 0;
+            gameState.lastPointsUpdate = data.lastPointsUpdate || Date.now();
+
+            pointsTotalElements.forEach(el => el.textContent = `Nanas: ${gameState.points.toFixed(3)}`);
+            pointsRateElements.forEach(el => el.textContent = `Production: ${gameState.pointsProduction.toFixed(1)}/hr`);
+
+            updateTileVisuals();
+            updateNftCards();
+            calculatePointsProduction();
+        } catch (err) {
+            console.warn("🔄 Sync failed:", err);
+        }
+    }, 5000); // every 5 seconds
+}
+
 </script>
