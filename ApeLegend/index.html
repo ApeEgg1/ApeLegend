@@ -1631,7 +1631,7 @@ tileBuildingInfo.appendChild(buildingDiv);
             if (Date.now() >= tile.arrivalTime) {
                 const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
                 tile.nftIds = [...tile.transitNFTs];
                 tile.nftIds.forEach(nftId => {
                     gameState.nftLocations[nftId] = tileIndex;
@@ -1890,15 +1890,19 @@ function resolveAttack(attackerTileIndex, defenderTileIndex, attackerNFTs, defen
         const tile = gameState.tiles[defenderTileIndex];
         const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
-        loadDefenderNFTsForTile(tileIndex);
-        loadDefenderNFTsForTile(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
+        loadDefenderNFTsForTile(defenderTileIndex);
+        loadDefenderNFTsForTile(defenderTileIndex);
         const defenderNFTs = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, defenderNFTs);
         // Save defenders before overwrite
         const previousDefenders = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, previousDefenders);
 tile.nftIds = attackerNFTs.map(n => n.id);
+        attackerNFTs.forEach(n => {
+            gameState.nftLocations[n.id] = defenderTileIndex;
+        });
+        updateNftCards();
         tile.buildings = {
             nest: { level: 0, completeTime: null },
             storage: { level: 0, completeTime: null }
@@ -1993,7 +1997,7 @@ function confirmAction() {
         }
         const previousOwner = tile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
         // 🔄 Immediately mark NFTs as pending to block re-use
         gameState.selectedNFTs.forEach(nftId => {
             gameState.nftLocations[nftId] = 'pending';
@@ -3230,7 +3234,7 @@ confirmAction = function() {
     const tile = gameState.tiles[tileIndex];
     const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
     tile.nftIds = [...gameState.selectedNFTs];
         const fullNfts = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, fullNfts);
@@ -3337,7 +3341,7 @@ confirmAction = function() {
     const tile = gameState.tiles[tileIndex];
     const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
     tile.nftIds = [...gameState.selectedNFTs];
         const fullNfts = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, fullNfts);
@@ -3521,7 +3525,7 @@ confirmAction = function() {
     const tile = gameState.tiles[tileIndex];
     const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
     tile.nftIds = [...gameState.selectedNFTs];
         const fullNfts = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, fullNfts);
@@ -4108,9 +4112,9 @@ function resolveAttack(attackerTileIndex, defenderTileIndex, attackerNFTs, defen
         const tile = gameState.tiles[defenderTileIndex];
         const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-    updateTileInSupabase(tileIndex);
-        loadDefenderNFTsForTile(tileIndex);
-        loadDefenderNFTsForTile(tileIndex);
+        updateTileInSupabase(defenderTileIndex);
+        loadDefenderNFTsForTile(defenderTileIndex);
+        loadDefenderNFTsForTile(defenderTileIndex);
         const defenderNFTs = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
         storeDefenderNfts(tile.owner, defenderNFTs);
         // Save defenders before overwrite
