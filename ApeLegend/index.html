@@ -883,7 +883,7 @@ window.addEventListener("load", async () => {
                         if (!window.__tilesPopulatedFromSupabase__) {
                                                   gameState.tiles[i].owner = tile.owner;
                         }
-                        gameState.tiles[i].nftIds = tile.nftIds || [];
+                        if (tile.nftIds) gameState.tiles[i].nftIds = tile.nftIds;
                         gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                         gameState.tiles[i].inTransit = tile.inTransit || false;
                         gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
@@ -1243,7 +1243,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
                     const tile = parsed.tiles[i];
                     if (tile.owner === gameState.connectedWallet) {
                         gameState.tiles[i].owner = tile.owner;
-                        gameState.tiles[i].nftIds = tile.nftIds || [];
+                        if (tile.nftIds) gameState.tiles[i].nftIds = tile.nftIds;
                     }
                     gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                     gameState.tiles[i].inTransit = tile.inTransit || false;
@@ -1921,8 +1921,10 @@ tile.nftIds = attackerNFTs.map(n => n.id);
             const key = localStorage.key(i);
             if (key.startsWith(STORAGE_KEY + '_')) {
                 try {
+            if (key.startsWith(STORAGE_KEY + '_')) {
                     const parsed = JSON.parse(localStorage.getItem(key));
                     
+            }
 
 console.log("Checking localStorage key:", key);
 console.log("Parsed owner:", parsed?.tiles?.[defenderTileIndex]?.owner, "| Previous owner:", previousOwner);
@@ -2456,8 +2458,10 @@ async function connectWallet() {
                   if (key.startsWith(STORAGE_KEY + '_')) {
         }
             try {
+            if (key.startsWith(STORAGE_KEY + '_')) {
                 const parsed = JSON.parse(localStorage.getItem(key));
                 if (parsed.tiles?.length === 500) {
+            }
                     for (let j = 0; j < 500; j++) {
                         if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
                             gameState.tiles[j].owner = parsed.tiles[j].owner;
@@ -3914,7 +3918,7 @@ if (!window.mapRefreshInterval) {
             for (let i = 0; i < 500; i++) {
                 const tile = parsed.tiles[i];
                 gameState.tiles[i].owner = tile.owner;
-                gameState.tiles[i].nftIds = tile.nftIds || [];
+                        if (tile.nftIds) gameState.tiles[i].nftIds = tile.nftIds;
                 gameState.tiles[i].inTransit = tile.inTransit || false;
                 gameState.tiles[i].arrivalTime = tile.arrivalTime || null;
                 gameState.tiles[i].transitStartTime = tile.transitStartTime || null;
@@ -4139,8 +4143,10 @@ tile.nftIds = attackerNFTs.map(n => n.id);
             const key = localStorage.key(i);
             if (key.startsWith(STORAGE_KEY + '_')) {
                 try {
+            if (key.startsWith(STORAGE_KEY + '_')) {
                     const parsed = JSON.parse(localStorage.getItem(key));
                     if (parsed?.tiles?.[defenderTileIndex]?.owner === gameState.tiles[defenderTileIndex].owner) {
+            }
                         parsed.tiles[defenderTileIndex].owner = null;
                         parsed.tiles[defenderTileIndex].nftIds = [];
                         parsed.tiles[defenderTileIndex].buildings = {
