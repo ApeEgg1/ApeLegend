@@ -1,4 +1,3 @@
-
 const { createClient } = require('@supabase/supabase-js');
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
@@ -14,7 +13,7 @@ exports.handler = async (event) => {
     const { error } = await supabase.from('tiles')
       .update({
         owner: tile.owner,
-        nft_ids: JSON.stringify(tile.nft_ids || []),
+        nft_ids: Array.isArray(tile.nft_ids) ? JSON.stringify(tile.nft_ids) : tile.nft_ids,
         buildings: tile.buildings,
         in_transit: tile.in_transit,
         arrival_time: tile.arrival_time,
@@ -29,9 +28,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({ success: true })
     };
   } catch (err) {
+    console.error("❌ Supabase update failed:", err);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: err.message, stack: err.stack })
     };
   }
 };
