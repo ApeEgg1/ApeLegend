@@ -1625,20 +1625,21 @@ tileBuildingInfo.appendChild(buildingDiv);
 
 function completeTransit(tileIndex) {
     const tile = gameState.tiles[tileIndex];
+
     clearInterval(gameState.transitIntervals[tileIndex]);
     delete gameState.transitIntervals[tileIndex];
 
     tile.inTransit = false;
-    tile.arrivalTime = null;
     tile.transitStartTime = null;
+    tile.arrivalTime = null;
 
     tile.owner = gameState.connectedWallet;
-    tile.nftIds = [...tile.transitNFTs];
+    tile.nftIds = [...tile.transitNFTs]; // ✅ Now updated correctly
 
-    // ✅ Restore missing NFT metadata
+    // ✅ Restore missing metadata before updating
     tile.nftIds.forEach(nftId => {
-        if (!gameState.nfts.some(n => n.id === nftId)) {
-            const meta = gameState.nftsBackup?.find(n => n.id === nftId);
+        if (!gameState.nfts.some(n => n.id == nftId)) {
+            const meta = gameState.nftsBackup?.find(n => n.id == nftId);
             if (meta) gameState.nfts.push(meta);
         }
         gameState.nftLocations[nftId] = tileIndex;
@@ -1646,11 +1647,14 @@ function completeTransit(tileIndex) {
 
     tile.transitNFTs = [];
 
-    updateTileInSupabase(tileIndex);
     updateNftCards();
     calculatePointsProduction();
     saveGameState();
+
+    // ✅ AFTER all values are fully ready
+    updateTileInSupabase(tileIndex);
 }
+
 
 
 
