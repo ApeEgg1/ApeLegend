@@ -1633,7 +1633,8 @@ tileBuildingInfo.appendChild(buildingDiv);
             if (Date.now() >= tile.arrivalTime) {
                 const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-        updateTileInSupabase(defenderTileIndex);
+        tile.nftIds = [...tile.transitNFTs];
+updateTileInSupabase(defenderTileIndex);
                 tile.nftIds = [...tile.transitNFTs];
                 tile.nftIds.forEach(nftId => {
                     gameState.nftLocations[nftId] = tileIndex;
@@ -1973,33 +1974,90 @@ function showAttackResultPopup(winChance, won) {
 }
 
 
-function confirmAction(tileIndex) {
-    const tile = gameState.tiles[tileIndex];
-    const defenderTile = gameState.tiles[tileIndex];
-
-    if (!gameState.selectedNFTs.length) {
-        showToast("Please select at least one NFT.");
+function confirmAction() {
+            if (gameState.selectedNFTs.length === 0) {
+                alert('Please select at least one NFT');
+                return;
+            }
+    // 🔒 Prevent duplicate usage of NFTs
+    const inUseNft = gameState.selectedNFTs.find(nftId => gameState.nftLocations[nftId]);
+    if (inUseNft) {
+        alert("One or more selected NFTs are already in use.");
         return;
     }
 
+    if (gameState.selectedNFTs.length > MAX_SELECTION) {
+        alert(`You can select a maximum of ${MAX_SELECTION} NFTs`);
+        return;
+    }
+
+    const tileIndex = gameState.selectedTile;
+    const tile = gameState.tiles[tileIndex];
+    const tileElement = document.querySelector(`.map-tile[data-index="${tileIndex}"]`);
+
     if (gameState.selectedAction === 'send') {
-        tile.nftIds = gameState.selectedNFTs.map(nft => nft.id);
-        tile.inTransit = false;
-        tile.transitStartTime = null;
-        tile.arrivalTime = null;
-        updateTileVisuals();
-        updateNftCards();
-        saveGameState();
+        if (gameState.transitIntervals[tileIndex]) {
+            clearInterval(gameState.transitIntervals[tileIndex]);
+            delete gameState.transitIntervals[tileIndex];
+        }
+        const previousOwner = tile.owner;
+        tile.owner = gameState.connectedWallet;
         updateTileInSupabase(tileIndex);
-    }
+        // 🔄 Immediately mark NFTs as pending to block re-use
+        gameState.selectedNFTs.forEach(nftId => {
+            gameState.nftLocations[nftId] = 'pending';
+        });
+        tile.nftIds = [...gameState.selectedNFTs];
+        const fullNfts = gameState.nfts.filter(n => tile.nftIds.includes(n.id));
+        storeDefenderNfts(tile.owner, fullNfts);
+        gameState.selectedNFTs.forEach(nftId => {
+            gameState.nftLocations[nftId] = tileIndex;
+        });
+        tileElement?.classList.add('in-transit');
+        updateNftCards();
+        updateTileVisuals();
+                startDefenderCleanup();
+        closeModal();
+        saveGameState();
+    } else if (gameState.selectedAction === 'attack') {
+        const attackerNFTs = gameState.nfts
+            .filter(n => gameState.selectedNFTs.includes(n.id));
 
-    if (gameState.selectedAction === 'attack') {
-        
-    const defenderTile = gameState.tiles[tileIndex];
-resolveAttack(tileIndex);
-    }
+        // 🔄 Immediately mark NFTs as pending to block re-use
+        gameState.selectedNFTs.forEach(nftId => {
+            gameState.nftLocations[nftId] = 'pending';
+        });
 
-    closeTileModal();
+        const defenderTile = gameState.tiles[tileIndex];
+
+        // 🔧 NEW: Fetch defender NFTs from localStorage using tile owner
+        const key = `${STORAGE_KEY}_${defenderTile.owner?.toLowerCase()}`;
+        const state = JSON.parse(localStorage.getItem(key) || '{}');
+
+        const defenderIds = state?.tiles?.[tileIndex]?.nftIds || [];
+        const defenderNFTs = defenderIds
+            .map(id => (state.nfts || []).find(n => String(n.id) === String(id)))
+            .filter(n => !!n);
+
+        if (defenderNFTs.length === 0) {
+            console.warn("⚠️ No defender NFTs found, using fallback!");
+            defenderNFTs.push({
+                id: 'defaultDefender',
+                name: 'Default Defender',
+                metadata: { attributes: [{ trait_type: 'Faction', value: 'Defender' }] }
+            });
+        }
+
+        resolveAttack(
+            gameState.selectedTile,
+            tileIndex,
+            attackerNFTs,
+            defenderNFTs,
+            state?.tiles?.[tileIndex]?.buildings
+        );
+
+        closeModal();
+    }
 }
 
         function initiateAttack() {
@@ -2350,7 +2408,7 @@ async function connectWallet() {
         attackButton.addEventListener('click', initiateAttack);
         sendButton.addEventListener('click', initiateSend);
         buildButton.addEventListener('click', initiateBuild);
-        confirmActionButton.addEventListener('click', () => confirmAction(gameState.selectedTile));
+        confirmActionButton.addEventListener('click', confirmAction);
         cancelActionButton.addEventListener('click', () => {
             gameState.selectedNFTs = [];
             actionNfts.style.display = 'none';
