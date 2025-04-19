@@ -1993,7 +1993,9 @@ function confirmAction(tileIndex) {
     }
 
     if (gameState.selectedAction === 'attack') {
-        resolveAttack(tileIndex);
+        
+    const defenderTile = gameState.tiles[tileIndex];
+resolveAttack(tileIndex);
     }
 
     closeTileModal();
