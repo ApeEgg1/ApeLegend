@@ -1512,6 +1512,7 @@ function updatePoints() {
         }
 
         function handleTileClick(tileIndex) {
+    const tileElement = document.querySelector(`.map-tile[data-index="${tileIndex}"]`);
     actionTimer.textContent = '';
             gameState.selectedTile = tileIndex;
             const tile = gameState.tiles[tileIndex];
