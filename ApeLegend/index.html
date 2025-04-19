@@ -1973,7 +1973,7 @@ function showAttackResultPopup(winChance, won) {
 }
 
 
-function confirmAction() {
+function confirmAction(tileIndex) {
     const tile = gameState.tiles[tileIndex];
 
     if (!gameState.selectedNFTs.length) {
@@ -2347,7 +2347,7 @@ async function connectWallet() {
         attackButton.addEventListener('click', initiateAttack);
         sendButton.addEventListener('click', initiateSend);
         buildButton.addEventListener('click', initiateBuild);
-        confirmActionButton.addEventListener('click', confirmAction);
+        confirmActionButton.addEventListener('click', () => confirmAction(gameState.selectedTile));
         cancelActionButton.addEventListener('click', () => {
             gameState.selectedNFTs = [];
             actionNfts.style.display = 'none';
