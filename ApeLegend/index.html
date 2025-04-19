@@ -1066,18 +1066,6 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
         const STUCK_TRANSIT_TIMEOUT = 5000;
 
         const gameState = {
-
-Object.defineProperty(gameState, "tiles", {
-  set(value) {
-    console.trace("🚨 gameState.tiles is being overwritten with:", value);
-    this._tiles = value;
-  },
-  get() {
-    return this._tiles;
-  },
-  configurable: true
-});
-
   _tiles: [], // backing field for tiles
 
             connectedWallet: null,
@@ -1105,6 +1093,17 @@ Object.defineProperty(gameState, "tiles", {
             lastPointsUpdate: Date.now(),
             pointsInterval: null
         };
+Object.defineProperty(gameState, "tiles", {
+  set(value) {
+    console.trace("🚨 gameState.tiles is being overwritten with:", value);
+    this._tiles = value;
+  },
+  get() {
+    return this._tiles;
+  },
+  configurable: true
+});
+
 
 
 // Restore cooldowns from localStorage
