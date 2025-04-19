@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     const { error } = await supabase.from('tiles').upsert({
       id: tile.id,
       owner: tile.owner,
-      nft_ids: tile.nftIds.map(String), // ✅ convert to string
+      nft_ids: tile.nft_ids || [],
       buildings: tile.buildings,
       in_transit: tile.in_transit,
       arrival_time: tile.arrival_time,
