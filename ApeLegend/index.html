@@ -2001,7 +2001,9 @@ function confirmAction() {
         }
         const previousOwner = tile.owner;
         tile.owner = gameState.connectedWallet;
-        updateTileInSupabase(tileIndex);
+        const tile = gameState.tiles[tileIndex];
+tile.nftIds = gameState.selectedNFTs.map(nft => nft.id);
+updateTileInSupabase(tileIndex);
         // 🔄 Immediately mark NFTs as pending to block re-use
         gameState.selectedNFTs.forEach(nftId => {
             gameState.nftLocations[nftId] = 'pending';
