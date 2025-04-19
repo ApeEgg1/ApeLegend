@@ -1521,7 +1521,8 @@ function updatePoints() {
             modalTitle.textContent = `Tile ${tileIndex + 1}`;
             tileLandform.textContent = tile.landform.name;
             gameState.selectedAction = null;
-            gameState.selectedNFTs = [];
+            gameState.nftsBackup = [...gameState.nfts];
+gameState.selectedNFTs = [];
             updateSelectionCount();
             initialActionButtons.style.display = 'flex';
             actionNfts.style.display = 'none';
@@ -1633,10 +1634,27 @@ tileBuildingInfo.appendChild(buildingDiv);
             if (Date.now() >= tile.arrivalTime) {
                 const previousOwner = defenderTile.owner;
         tile.owner = gameState.connectedWallet;
-        tile.nftIds = [...tile.transitNFTs];
-updateTileInSupabase(defenderTileIndex);
+        updateTileInSupabase(defenderTileIndex);
                 tile.nftIds = [...tile.transitNFTs];
-                tile.nftIds.forEach(nftId => {
+                
+        
+        // ✅ Ensure NFT metadata is retained in gameState.nfts
+        tile.nftIds.forEach(nftId => {
+            if (!gameState.nfts.some(n => n.id === nftId)) {
+                const meta = gameState.nftsBackup?.find(n => n.id === nftId);
+                if (meta) gameState.nfts.push(meta);
+            }
+            gameState.nftLocations[nftId] = tileIndex;
+        });
+// ✅ Ensure NFT metadata is retained in gameState.nfts
+        tile.nftIds.forEach(nftId => {
+            if (!gameState.nfts.some(n => n.id === nftId)) {
+                const meta = gameState.nftsBackup?.find(n => n.id === nftId);
+                if (meta) gameState.nfts.push(meta);
+            }
+            gameState.nftLocations[nftId] = tileIndex;
+        });
+tile.nftIds.forEach(nftId => {
                     gameState.nftLocations[nftId] = tileIndex;
                 });
             } else {
@@ -2300,7 +2318,8 @@ async function connectWallet() {
             connectButton.disabled = false;
             disconnectButton.disabled = true;
             nftCount.textContent = '0';
-            gameState.selectedNFTs = [];
+            gameState.nftsBackup = [...gameState.nfts];
+gameState.selectedNFTs = [];
             
             gameState.points = 0;
             gameState.pointsProduction = 0;
@@ -2410,7 +2429,8 @@ async function connectWallet() {
         buildButton.addEventListener('click', initiateBuild);
         confirmActionButton.addEventListener('click', confirmAction);
         cancelActionButton.addEventListener('click', () => {
-            gameState.selectedNFTs = [];
+            gameState.nftsBackup = [...gameState.nfts];
+gameState.selectedNFTs = [];
             actionNfts.style.display = 'none';
             initialActionButtons.style.display = 'flex';
         });
@@ -3600,7 +3620,8 @@ function showNftSelection(action) {
     initialActionButtons.style.display = 'none';
     actionNfts.style.display = 'block';
     actionNftsGrid.innerHTML = '';
-    gameState.selectedNFTs = [];
+    gameState.nftsBackup = [...gameState.nfts];
+gameState.selectedNFTs = [];
 
     const seen = new Set();
     const filteredNFTs = gameState.nfts.filter(n => {
