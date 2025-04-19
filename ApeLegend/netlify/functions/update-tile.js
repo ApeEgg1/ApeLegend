@@ -10,14 +10,15 @@ exports.handler = async (event) => {
     const tile = JSON.parse(event.body);
     console.log("🚀 Supabase update payload:", tile);
 
+    // Ensure compatibility: convert camelCase to snake_case for Supabase
     const { error } = await supabase.from('tiles')
       .update({
         owner: tile.owner,
-        nft_ids: tile.nft_ids || [],  // ✅ fixed here
+        nft_ids: tile.nftIds || [], // ✅ Match frontend (camelCase) here
         buildings: tile.buildings,
-        in_transit: tile.in_transit,
-        arrival_time: tile.arrival_time,
-        transit_start_time: tile.transit_start_time
+        in_transit: tile.inTransit,
+        arrival_time: tile.arrivalTime,
+        transit_start_time: tile.transitStartTime
       })
       .eq('id', tile.id);
 
