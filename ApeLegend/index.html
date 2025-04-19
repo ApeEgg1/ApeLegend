@@ -1975,6 +1975,7 @@ function showAttackResultPopup(winChance, won) {
 
 function confirmAction(tileIndex) {
     const tile = gameState.tiles[tileIndex];
+    const defenderTile = gameState.tiles[tileIndex];
 
     if (!gameState.selectedNFTs.length) {
         showToast("Please select at least one NFT.");
