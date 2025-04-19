@@ -847,7 +847,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -2575,7 +2575,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -2619,7 +2619,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -2947,7 +2947,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3100,7 +3100,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3285,7 +3285,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3482,7 +3482,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3684,7 +3684,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3770,7 +3770,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3827,7 +3827,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3891,7 +3891,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -3947,7 +3947,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -4001,7 +4001,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -4220,7 +4220,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
@@ -4278,7 +4278,7 @@ async function updateTileInSupabase(tileId) {
             body: JSON.stringify({
                 id: tileId,
                 owner: tile.owner,
-                nft_ids: tile.nftIds,
+                nft_ids: tile.nftIds.map(String),  // ✅ Force NFT IDs to strings
                 buildings: tile.buildings,
                 in_transit: tile.inTransit,
                 arrival_time: tile.arrivalTime,
