@@ -13,7 +13,7 @@ exports.handler = async (event) => {
     const { error } = await supabase.from('tiles')
       .update({
         owner: tile.owner,
-        nft_ids: Array.isArray(tile.nft_ids) ? JSON.stringify(tile.nft_ids) : tile.nft_ids,
+        nft_ids: tile.nft_ids || [],
         buildings: tile.buildings,
         in_transit: tile.in_transit,
         arrival_time: tile.arrival_time,
