@@ -2442,7 +2442,7 @@ async function connectWallet() {
                         if (parsed.tiles?.length === 500) {
                             for (let j = 0; j < 500; j++) {
                                 if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
-                                    gameState.tiles[j].owner = parsed.tiles[j].owner;
+                                    /* gameState.tiles[j].owner = parsed.tiles[j].owner; */
                                 }
                             }
                         }
@@ -2458,7 +2458,7 @@ async function connectWallet() {
                 if (parsed.tiles?.length === 500) {
                     for (let j = 0; j < 500; j++) {
                         if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
-                            gameState.tiles[j].owner = parsed.tiles[j].owner;
+                            /* gameState.tiles[j].owner = parsed.tiles[j].owner; */
                         }
                     }
                 }
