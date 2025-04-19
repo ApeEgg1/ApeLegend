@@ -11,15 +11,16 @@ exports.handler = async (event) => {
     const tile = JSON.parse(event.body);
     console.log("🚀 Supabase update payload:", tile);
 
-    const { error } = await supabase.from('tiles').upsert({
-      id: tile.id,
-      owner: tile.owner,
-      nft_ids: tile.nft_ids || [],
-      buildings: tile.buildings,
-      in_transit: tile.in_transit,
-      arrival_time: tile.arrival_time,
-      transit_start_time: tile.transit_start_time
-    });
+    const { error } = await supabase.from('tiles')
+      .update({
+        owner: tile.owner,
+        nft_ids: tile.nft_ids || [],
+        buildings: tile.buildings,
+        in_transit: tile.in_transit,
+        arrival_time: tile.arrival_time,
+        transit_start_time: tile.transit_start_time
+      })
+      .eq('id', tile.id);
 
     if (error) throw error;
 
