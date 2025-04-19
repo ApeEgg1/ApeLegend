@@ -880,7 +880,9 @@ window.addEventListener("load", async () => {
                 if (parsed && parsed.tiles) {
                     for (let i = 0; i < 500; i++) {
                         const tile = parsed.tiles[i];
-                        gameState.tiles[i].owner = tile.owner;
+                        if (!window.__tilesPopulatedFromSupabase__) {
+                                                  gameState.tiles[i].owner = tile.owner;
+                        }
                         gameState.tiles[i].nftIds = tile.nftIds || [];
                         gameState.tiles[i].transitNFTs = tile.transitNFTs || [];
                         gameState.tiles[i].inTransit = tile.inTransit || false;
@@ -1261,7 +1263,9 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
             if (savedState) {
                 try {
                     const parsedState = JSON.parse(savedState);
-                    if (parsedState.tiles && parsedState.tiles.length === 500) {
+                    if (!window.__tilesPopulatedFromSupabase__) {
+                                          if (parsedState.tiles && parsedState.tiles.length === 500) {
+                    }
                         for (let i = 0; i < 500; i++) {
                             gameState.tiles[i].owner = parsedState.tiles[i].owner;
                             gameState.tiles[i].nftIds = parsedState.tiles[i].nftIds || [];
@@ -2427,7 +2431,9 @@ async function connectWallet() {
                 const key = localStorage.key(i);
                 if (key.startsWith(STORAGE_KEY + '_')) {
                     try {
-                        const parsed = JSON.parse(localStorage.getItem(key));
+                        if (!window.__tilesPopulatedFromSupabase__) {
+                                                  const parsed = JSON.parse(localStorage.getItem(key));
+                        }
                         if (parsed.tiles?.length === 500) {
                             for (let j = 0; j < 500; j++) {
                                 if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
@@ -2441,7 +2447,9 @@ async function connectWallet() {
             
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key.startsWith(STORAGE_KEY + '_')) {
+        if (!window.__tilesPopulatedFromSupabase__) {
+                  if (key.startsWith(STORAGE_KEY + '_')) {
+        }
             try {
                 const parsed = JSON.parse(localStorage.getItem(key));
                 if (parsed.tiles?.length === 500) {
@@ -3890,7 +3898,9 @@ async function updateTileInSupabase(tileId) {
 if (!window.mapRefreshInterval) {
     window.mapRefreshInterval = setInterval(async () => {
         if (!gameState.connectedWallet) return;
-        try {
+        if (!window.__tilesPopulatedFromSupabase__) {
+                  try {
+        }
             const res = await fetch(`/.netlify/functions/get-session?wallet=${gameState.connectedWallet}`);
             if (!res.ok) throw new Error("Failed to fetch session");
             const parsed = await res.json();
