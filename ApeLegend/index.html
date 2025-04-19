@@ -942,6 +942,8 @@ generateMap(); // deferred until after tile ownership is loaded
                 if (gameState.tiles[tile.id]) {
                     gameState.tiles[tile.id].owner = tile.owner;
                     gameState.tiles[tile.id].nftIds = tile.nft_ids;
+gameState.nftLocations = gameState.nftLocations || {};
+tile.nft_ids?.forEach(id => gameState.nftLocations[id] = tile.id);
                     gameState.tiles[tile.id].inTransit = tile.in_transit;
                     gameState.tiles[tile.id].arrivalTime = tile.arrival_time;
                     gameState.tiles[tile.id].transitStartTime = tile.transit_start_time;
