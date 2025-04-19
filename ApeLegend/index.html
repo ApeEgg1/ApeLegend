@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
@@ -801,12 +800,39 @@
 if (!window.defenderCleanupInterval) {
     window.defenderCleanupInterval = setInterval(() => {
         Object.entries(gameState.nftLocations).forEach(([nftId, loc]) => {
+        const gameState = {
+  _tiles: [], // backing field for tiles
+
+            connectedWallet: null,
+            selectedTile: null,
+            selectedAction: null,
+            selectedNFTs: [],
+            nfts: [],
+            tiles: Array(500).fill().map(() => ({
+                landform: null,
+                owner: null,
+                nftIds: [],
+                inTransit: false,
+                transitStartTime: null,
+                arrivalTime: null,
+                transitNFTs: [],
+                buildings: {
+                    nest: { level: 0, completeTime: null },
+                    storage: { level: 0, completeTime: null }
+                }
+            })),
+            nftLocations: {},
+            transitIntervals: {},
+            points: 0,
+            pointsProduction: 0,
+            lastPointsUpdate: Date.now(),
+            pointsInterval: null
+        };
             if (loc !== 'cooldown' && typeof loc === 'number') {
                 const tile = gameState.tiles[loc];
                 if (tile && tile.owner !== gameState.playerAddress && tile.owner !== gameState.connectedWallet) {
                     gameState.nftLocations[nftId] = 'cooldown';
                     localStorage.setItem(`cooldownStart_${nftId}`, Date.now());
-                }
             }
         });
         updateNftCards();
@@ -860,7 +886,287 @@ async function updateTileInSupabase(tileId) {
 }
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">async function saveGameStateToBackend() {
+    if (!gameState.connectedWallet) return;
+    try {
+        const response = await fetch("/.netlify/functions/save-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                wallet: gameState.connectedWallet,
+                gameState: gameState
+            }),
+        });
+        if (!response.ok) throw new Error("Request failed");
+        const result = await response.json().catch(() => null);
+        console.log("✅ Game state saved to Netlify:", result);
+    } catch (error) {
+        console.error("❌ Failed to save to backend:", error);
+    }
+}
+
+
+async function updateTileInSupabase(tileId) {
+    const tile = gameState.tiles[tileId];
+    try {
+        await fetch("/.netlify/functions/update-tile", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: tileId,
+                owner: tile.owner,
+                nft_ids: tile.nftIds,
+                buildings: tile.buildings,
+                in_transit: tile.inTransit,
+                arrival_time: tile.arrivalTime,
+                transit_start_time: tile.transitStartTime
+            })
+        });
+    } catch (err) {
+        console.warn("Failed to update Supabase tile:", err);
+    }
+}
+
+</script>
+<!-- BEGIN CUSTOM GAME LOGIC EXTENSIONS -->
+<style>
+    #gamePopup {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(30, 0, 60, 0.95);
+        color: #ffeb3b;
+        padding: 1rem 2rem;
+        border: 2px solid #9c4dff;
+        border-radius: 12px;
+        box-shadow: 0 0 20px #9c4dff;
+        z-index: 9999;
+        font-size: 1rem;
+        display: none;
+    }
+
+.menu-item.disabled-blur {
+    filter: blur(2px);
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+
+@media (max-width: 768px) {
+    .top-menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-items {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .menu-item {
+        margin: 0.25rem 0;
+        width: 100%;
+        text-align: left;
+    }
+
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .nft-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .map-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 100%;
+    }
+
+    .points-display {
+        position: static;
+        margin-bottom: 1rem;
+        width: 100%;
+        align-items: flex-start;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .action-nfts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .nft-image {
+        height: auto;
+        max-height: 150px;
+    }
+
+    .action-nft-image {
+        height: auto;
+        max-height: 80px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .top-menu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .menu-items {
+        flex-direction: column;
+        width: 100%;
+        display: none;
+    }
+
+    .menu-items.show {
+        display: flex;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: #cfd8dc;
+        background: rgba(30, 0, 60, 0.8);
+        border: 1px solid #00e5ff;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .nft-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .map-grid {
+        grid-template-columns: repeat(10, 1fr);
+        max-width: 100%;
+    }
+
+    .points-display {
+        position: static;
+        margin-bottom: 1rem;
+        width: 100%;
+        align-items: flex-start;
+        transform: scale(0.8); /* Make it ~20% smaller */
+        transform-origin: top right;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .action-nfts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+
+    .nft-image {
+        height: auto;
+        max-height: 150px;
+    }
+
+    .action-nft-image {
+        height: auto;
+        max-height: 80px;
+    }
+}
+
+/* Overlay should only cover the image */
+.nft-card .nft-status-overlay {
+    height: auto !important;
+    bottom: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+
+@media (max-width: 768px) {
+    .points-display {
+        transform: scale(0.8);
+        transform-origin: top center;
+        align-items: center;
+        margin: 0 auto 1rem auto;
+    }
+}
+
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none !important;
+    }
+}
+
+</style>
+<div id="gamePopup"></div>
+<!-- END CUSTOM GAME LOGIC EXTENSIONS -->
+<!-- Recall NFTs Modal -->
+<div class="modal" id="recallModal">
+<div class="modal-content">
+<h3 class="modal-title">Recall NFTs</h3>
+<p>Select an NFT to recall or press "Recall All"</p>
+<select id="recallSelect" style="width:100%;padding:10px;border-radius:8px;margin-bottom:1rem;"></select>
+<div class="modal-buttons">
+<button id="recallOneBtn">Recall Selected</button>
+<button id="recallAllBtn">Recall All</button>
+<button onclick="document.getElementById('recallModal').style.display='none'">Cancel</button>
+</div>
+</div>
+</div>
+<div class="modal" id="attackResultPopup" style="z-index:200;">
+<div class="modal-content" style="text-align:center;">
+<h3 class="modal-title">Battle Result</h3>
+<p id="attackResultText" style="font-size:1.2rem;"></p>
+<div class="modal-buttons">
+<button onclick="document.getElementById('attackResultPopup').style.display='none'">Close</button>
+</div>
+</div>
+</div>
+
+<div class="modal" id="guideModal">
+  <div class="modal-content">
+    <h2 class="modal-title">How to Play</h2>
+    <div style="text-align:left; font-size: 0.9rem; color: #cfd8dc;">
+      <p><strong>🔗 Connect Your Wallet:</strong> Use Rabby, MetaMask, or WalletConnect to connect and load your NFTs.</p>
+      <p><strong>🥚 NFT Traits:</strong> Each egg has Faction, Type, Gender, and Landform. Genesis and Mutant types give better bonuses.</p>
+      <p><strong>🗺️ Map Overview:</strong> Explore the 500 tiles and view ownership, landform, and buildings.</p>
+      <p><strong>🚀 Sending NFTs:</strong> Click a tile to send up to 4 NFTs. They start producing <em>Nanas</em> based on their bonuses.</p>
+      <p><strong>⚔️ Attacking:</strong> Choose enemy tiles and send NFTs to attack. Win chance depends on type, faction, landform, and defender's buildings.</p>
+      <p><strong>🏗️ Buildings:</strong> Nest Tower increases defense; Egg Storage increases production. Each has 5 upgrade levels.</p>
+      <p><strong>💸 Nanas:</strong> Earned per hour. Used in future features like Raffles, Casino, and Hatching Grounds.</p>
+      <p><strong>📜 Tips for Success:</strong></p>
+      <ul>
+        <li>Use <strong>Workers</strong> or <strong>Captains</strong> for production bonus.</li>
+        <li>Match NFT landform with tile for +10% boost.</li>
+        <li>Use <strong>Builders</strong> or <strong>Captains</strong> to reduce upgrade times.</li>
+        <li>Use <strong>Thieves</strong> or <strong>Captains</strong> to improve attack success rate.</li>
+      </ul>
+    </div>
+    <div class="modal-buttons"><button onclick="closeGuide()">Close</button></div>
+  </div>
+</div>
+
+
 <script>
+window.addEventListener('load', () => {
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 window.addEventListener("load", async () => {
     if (window.ethereum) {
         const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -890,7 +1196,6 @@ window.addEventListener("load", async () => {
                             nest: { level: 0, completeTime: null },
                             storage: { level: 0, completeTime: null }
                         };
-                    }
                     gameState.nftLocations = parsed.nftLocations || {};
                     gameState.points = parsed.points || 0;
                     gameState.pointsProduction = parsed.pointsProduction || 0;
@@ -902,6 +1207,21 @@ window.addEventListener("load", async () => {
                     updateTileVisuals();
                     updateNftCards();
                     // 
+        function updateTileVisuals() {
+            for (let i = 0; i < 500; i++) {
+                const tile = gameState.tiles[i];
+        
+                const tileElement = document.querySelector(`.map-tile[data-index="${i}"]`);
+                if (!tileElement) continue;
+                
+                tileElement.className = 'map-tile';
+                
+                if (tile.owner) {
+                    if (gameState.connectedWallet === tile.owner) {
+                        tileElement.classList.add('yours');
+                    } else {
+                        tileElement.classList.add('occupied');
+                    }
 
 // 🕵️ Injected tracker for early tile assignment detection
 Object.defineProperty(gameState, "tiles", {
@@ -1065,34 +1385,8 @@ function storeDefenderNfts(ownerAddress, nftDataArray) {
         const TRANSIT_DURATION = 0;
         const STUCK_TRANSIT_TIMEOUT = 5000;
 
-        const gameState = {
-  _tiles: [], // backing field for tiles
 
-            connectedWallet: null,
-            selectedTile: null,
-            selectedAction: null,
-            selectedNFTs: [],
-            nfts: [],
-            tiles: Array(500).fill().map(() => ({
-                landform: null,
-                owner: null,
-                nftIds: [],
-                inTransit: false,
-                transitStartTime: null,
-                arrivalTime: null,
-                transitNFTs: [],
-                buildings: {
-                    nest: { level: 0, completeTime: null },
-                    storage: { level: 0, completeTime: null }
                 }
-            })),
-            nftLocations: {},
-            transitIntervals: {},
-            points: 0,
-            pointsProduction: 0,
-            lastPointsUpdate: Date.now(),
-            pointsInterval: null
-        };
 Object.defineProperty(gameState, "tiles", {
   set(value) {
     console.trace("🚨 gameState.tiles is being overwritten with:", value);
@@ -1326,7 +1620,6 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
             for (let i = 0; i < 100; i++) landforms.push(LANDFORMS.UNDERGROUND);
             for (let i = 0; i < 100; i++) landforms.push(LANDFORMS.UNMARKED);
             seededShuffle(landforms, MAP_SEED);
-            for (let i = 0; i < 500; i++) {
                 const landform = landforms[i];
                 gameState.tiles[i].landform = landform;
                 const tile = document.createElement('div');
@@ -1350,20 +1643,7 @@ const pointsRateElements = document.querySelectorAll('#pointsRate');
             return array;
         }
 
-        function updateTileVisuals() {
             for (let i = 0; i < 500; i++) {
-                const tile = gameState.tiles[i];
-        
-                const tileElement = document.querySelector(`.map-tile[data-index="${i}"]`);
-                if (!tileElement) continue;
-                
-                tileElement.className = 'map-tile';
-                
-                if (tile.owner) {
-                    if (gameState.connectedWallet === tile.owner) {
-                        tileElement.classList.add('yours');
-                    } else {
-                        tileElement.classList.add('occupied');
                     }
                 }
                 
@@ -2450,16 +2730,7 @@ async function connectWallet() {
                 }
             }
             
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith(STORAGE_KEY + '_')) {
-            try {
-                const parsed = JSON.parse(localStorage.getItem(key));
-                if (parsed.tiles?.length === 500) {
-                    for (let j = 0; j < 500; j++) {
-                        if (!gameState.tiles[j].owner && parsed.tiles[j].owner) {
-                            /* gameState.tiles[j].owner = parsed.tiles[j].owner; */
-                        }
+    /* Duplicate localStorage merge block removed */
                     }
                 }
             } catch (err) { console.warn('Bad wallet state', key); }
@@ -2579,236 +2850,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">async function saveGameStateToBackend() {
-    if (!gameState.connectedWallet) return;
-    try {
-        const response = await fetch("/.netlify/functions/save-session", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                wallet: gameState.connectedWallet,
-                gameState: gameState
-            }),
-        });
-        if (!response.ok) throw new Error("Request failed");
-        const result = await response.json().catch(() => null);
-        console.log("✅ Game state saved to Netlify:", result);
-    } catch (error) {
-        console.error("❌ Failed to save to backend:", error);
-    }
-}
-
-
-async function updateTileInSupabase(tileId) {
-    const tile = gameState.tiles[tileId];
-    try {
-        await fetch("/.netlify/functions/update-tile", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                id: tileId,
-                owner: tile.owner,
-                nft_ids: tile.nftIds,
-                buildings: tile.buildings,
-                in_transit: tile.inTransit,
-                arrival_time: tile.arrivalTime,
-                transit_start_time: tile.transitStartTime
-            })
-        });
-    } catch (err) {
-        console.warn("Failed to update Supabase tile:", err);
-    }
-}
-
-</script>
-<!-- BEGIN CUSTOM GAME LOGIC EXTENSIONS -->
-<style>
-    #gamePopup {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(30, 0, 60, 0.95);
-        color: #ffeb3b;
-        padding: 1rem 2rem;
-        border: 2px solid #9c4dff;
-        border-radius: 12px;
-        box-shadow: 0 0 20px #9c4dff;
-        z-index: 9999;
-        font-size: 1rem;
-        display: none;
-    }
-
-.menu-item.disabled-blur {
-    filter: blur(2px);
-    pointer-events: none;
-    opacity: 0.6;
-}
-
-
-@media (max-width: 768px) {
-    .top-menu {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .menu-items {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .menu-item {
-        margin: 0.25rem 0;
-        width: 100%;
-        text-align: left;
-    }
-
-    .container {
-        padding: 1rem;
-        margin: 1rem;
-    }
-
-    .nft-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-
-    .map-grid {
-        grid-template-columns: repeat(10, 1fr);
-        max-width: 100%;
-    }
-
-    .points-display {
-        position: static;
-        margin-bottom: 1rem;
-        width: 100%;
-        align-items: flex-start;
-    }
-
-    .modal-content {
-        width: 95%;
-        padding: 1rem;
-    }
-
-    .action-nfts-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
-    .nft-image {
-        height: auto;
-        max-height: 150px;
-    }
-
-    .action-nft-image {
-        height: auto;
-        max-height: 80px;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .top-menu {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .menu-items {
-        flex-direction: column;
-        width: 100%;
-        display: none;
-    }
-
-    .menu-items.show {
-        display: flex;
-    }
-
-    .menu-toggle {
-        display: block;
-        cursor: pointer;
-        padding: 0.5rem 1rem;
-        color: #cfd8dc;
-        background: rgba(30, 0, 60, 0.8);
-        border: 1px solid #00e5ff;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-    }
-
-    .container {
-        padding: 1rem;
-        margin: 1rem;
-    }
-
-    .nft-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    }
-
-    .map-grid {
-        grid-template-columns: repeat(10, 1fr);
-        max-width: 100%;
-    }
-
-    .points-display {
-        position: static;
-        margin-bottom: 1rem;
-        width: 100%;
-        align-items: flex-start;
-        transform: scale(0.8); /* Make it ~20% smaller */
-        transform-origin: top right;
-    }
-
-    .modal-content {
-        width: 95%;
-        padding: 1rem;
-    }
-
-    .action-nfts-grid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
-    .nft-image {
-        height: auto;
-        max-height: 150px;
-    }
-
-    .action-nft-image {
-        height: auto;
-        max-height: 80px;
-    }
-}
-
-/* Overlay should only cover the image */
-.nft-card .nft-status-overlay {
-    height: auto !important;
-    bottom: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    max-height: 200px;
-    overflow: hidden;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-
-@media (max-width: 768px) {
-    .points-display {
-        transform: scale(0.8);
-        transform-origin: top center;
-        align-items: center;
-        margin: 0 auto 1rem auto;
-    }
-}
-
-@media (min-width: 769px) {
-    .menu-toggle {
-        display: none !important;
-    }
-}
-
-</style>
-<div id="gamePopup"></div>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
     function showGameMessage(message, duration = 3000) {
         const popup = document.getElementById('gamePopup');
         popup.textContent = message;
@@ -2951,9 +2996,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<!-- END CUSTOM GAME LOGIC EXTENSIONS -->
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 // Enhanced recall logic
 document.getElementById('recallNftsButton')?.addEventListener('click', () => {
     if (!gameState.connectedWallet) {
@@ -3104,21 +3150,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<!-- Recall NFTs Modal -->
-<div class="modal" id="recallModal">
-<div class="modal-content">
-<h3 class="modal-title">Recall NFTs</h3>
-<p>Select an NFT to recall or press "Recall All"</p>
-<select id="recallSelect" style="width:100%;padding:10px;border-radius:8px;margin-bottom:1rem;"></select>
-<div class="modal-buttons">
-<button id="recallOneBtn">Recall Selected</button>
-<button id="recallAllBtn">Recall All</button>
-<button onclick="document.getElementById('recallModal').style.display='none'">Cancel</button>
-</div>
-</div>
-</div>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 document.getElementById('recallNftsButton')?.addEventListener('click', () => {
     if (!gameState.connectedWallet) {
         showGameMessage("Connect wallet first.");
@@ -3289,8 +3324,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 // Fix 1: Make sure only new modal shows
 document.getElementById('recallNftsButton')?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -3486,8 +3524,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 // ========== RECALL NFT POPUP CLEAN FIX ==========
 document.getElementById('recallNftsButton')?.addEventListener('click', (e) => {
     e.preventDefault();
@@ -3688,8 +3729,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 document.addEventListener('mousemove', (e) => {
     const tile = e.target.closest('.map-tile');
     const hoverBoxId = 'tile-hover-info';
@@ -3774,8 +3818,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 function updatePointsUI() {
     const el = document.getElementById("pointsRate");
     if (el) el.innerHTML = `Production: ${gameState.pointsProduction.toFixed(3)}/hr`;
@@ -3831,41 +3878,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<div class="modal" id="attackResultPopup" style="z-index:200;">
-<div class="modal-content" style="text-align:center;">
-<h3 class="modal-title">Battle Result</h3>
-<p id="attackResultText" style="font-size:1.2rem;"></p>
-<div class="modal-buttons">
-<button onclick="document.getElementById('attackResultPopup').style.display='none'">Close</button>
-</div>
-</div>
-</div>
-
-<div class="modal" id="guideModal">
-  <div class="modal-content">
-    <h2 class="modal-title">How to Play</h2>
-    <div style="text-align:left; font-size: 0.9rem; color: #cfd8dc;">
-      <p><strong>🔗 Connect Your Wallet:</strong> Use Rabby, MetaMask, or WalletConnect to connect and load your NFTs.</p>
-      <p><strong>🥚 NFT Traits:</strong> Each egg has Faction, Type, Gender, and Landform. Genesis and Mutant types give better bonuses.</p>
-      <p><strong>🗺️ Map Overview:</strong> Explore the 500 tiles and view ownership, landform, and buildings.</p>
-      <p><strong>🚀 Sending NFTs:</strong> Click a tile to send up to 4 NFTs. They start producing <em>Nanas</em> based on their bonuses.</p>
-      <p><strong>⚔️ Attacking:</strong> Choose enemy tiles and send NFTs to attack. Win chance depends on type, faction, landform, and defender's buildings.</p>
-      <p><strong>🏗️ Buildings:</strong> Nest Tower increases defense; Egg Storage increases production. Each has 5 upgrade levels.</p>
-      <p><strong>💸 Nanas:</strong> Earned per hour. Used in future features like Raffles, Casino, and Hatching Grounds.</p>
-      <p><strong>📜 Tips for Success:</strong></p>
-      <ul>
-        <li>Use <strong>Workers</strong> or <strong>Captains</strong> for production bonus.</li>
-        <li>Match NFT landform with tile for +10% boost.</li>
-        <li>Use <strong>Builders</strong> or <strong>Captains</strong> to reduce upgrade times.</li>
-        <li>Use <strong>Thieves</strong> or <strong>Captains</strong> to improve attack success rate.</li>
-      </ul>
-    </div>
-    <div class="modal-buttons"><button onclick="closeGuide()">Close</button></div>
-  </div>
-</div>
-
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
@@ -3895,9 +3911,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 
-<script>
 if (!window.mapRefreshInterval) {
     window.mapRefreshInterval = setInterval(async () => {
         if (!gameState.connectedWallet) return;
@@ -3949,11 +3967,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-
-</body>
-
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 function showGuide() {
   document.getElementById("guideModal").style.display = "flex";
 }
@@ -4003,10 +4020,10 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-
-</html>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
 
 
 function updatePointsUI() {
@@ -4220,8 +4237,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
-</script>
-<script>
+});
+// --- merged script block ends ---
+// --- merged script block starts ---
+window.addEventListener("load", () => {
+
 function showComingSoon(name) {
     alert(name + ' — Not added to the game yet');
 }
@@ -4278,4 +4298,11 @@ async function updateTileInSupabase(tileId) {
     }
 }
 
+});
+// --- merged script block ends ---
+});
 </script>
+</body>
+
+
+</html>
