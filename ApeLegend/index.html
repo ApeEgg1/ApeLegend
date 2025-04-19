@@ -1625,31 +1625,23 @@ tileBuildingInfo.appendChild(buildingDiv);
 
 function completeTransit(tileIndex) {
     const tile = gameState.tiles[tileIndex];
-
     clearInterval(gameState.transitIntervals[tileIndex]);
     delete gameState.transitIntervals[tileIndex];
 
     tile.inTransit = false;
-    tile.transitStartTime = null;
     tile.arrivalTime = null;
+    tile.transitStartTime = null;
 
-    const previousOwner = tile.owner;
     tile.owner = gameState.connectedWallet;
     tile.nftIds = [...tile.transitNFTs];
 
-    // ✅ Ensure NFT metadata is retained in gameState.nfts
+    // ✅ Restore missing NFT metadata
     tile.nftIds.forEach(nftId => {
         if (!gameState.nfts.some(n => n.id === nftId)) {
             const meta = gameState.nftsBackup?.find(n => n.id === nftId);
             if (meta) gameState.nfts.push(meta);
         }
         gameState.nftLocations[nftId] = tileIndex;
-    });
-
-    tile.transitNFTs.forEach(nftId => {
-        if (!tile.nftIds.includes(nftId)) {
-            gameState.nftLocations[nftId] = null;
-        }
     });
 
     tile.transitNFTs = [];
@@ -1659,6 +1651,7 @@ function completeTransit(tileIndex) {
     calculatePointsProduction();
     saveGameState();
 }
+
 
 
         function updateTransitTimer(tileIndex) {
@@ -2006,11 +1999,13 @@ function confirmAction() {
     const tile = gameState.tiles[tileIndex];
     const tileElement = document.querySelector(`.map-tile[data-index="${tileIndex}"]`);
 
-    if (gameState.selectedAction === 'send') {
-        if (gameState.transitIntervals[tileIndex]) {
-            clearInterval(gameState.transitIntervals[tileIndex]);
-            delete gameState.transitIntervals[tileIndex];
-        }
+if (gameState.selectedAction === 'send') {
+    gameState.nftsBackup = [...gameState.nfts];  // ✅ BACKUP NFT METADATA HERE
+
+    if (gameState.transitIntervals[tileIndex]) {
+        clearInterval(gameState.transitIntervals[tileIndex]);
+        delete gameState.transitIntervals[tileIndex];
+    }
         const previousOwner = tile.owner;
         tile.owner = gameState.connectedWallet;
         updateTileInSupabase(tileIndex);
@@ -2031,15 +2026,17 @@ function confirmAction() {
         closeModal();
         saveGameState();
     } else if (gameState.selectedAction === 'attack') {
-        const attackerNFTs = gameState.nfts
-            .filter(n => gameState.selectedNFTs.includes(n.id));
+    gameState.nftsBackup = [...gameState.nfts];  // ✅ BACKUP before attack
 
-        // 🔄 Immediately mark NFTs as pending to block re-use
-        gameState.selectedNFTs.forEach(nftId => {
-            gameState.nftLocations[nftId] = 'pending';
-        });
+    const attackerNFTs = gameState.nfts
+        .filter(n => gameState.selectedNFTs.includes(n.id));
 
-        const defenderTile = gameState.tiles[tileIndex];
+    // 🔄 Immediately mark NFTs as pending to block re-use
+    gameState.selectedNFTs.forEach(nftId => {
+        gameState.nftLocations[nftId] = 'pending';
+    });
+
+    const defenderTile = gameState.tiles[tileIndex];
 
         // 🔧 NEW: Fetch defender NFTs from localStorage using tile owner
         const key = `${STORAGE_KEY}_${defenderTile.owner?.toLowerCase()}`;
